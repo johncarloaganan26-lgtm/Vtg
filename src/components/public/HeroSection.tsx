@@ -100,7 +100,7 @@ export const HeroSection: React.FC = () => {
             {/* Clean Headset Container with No Clutter Background */}
             <div className="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[440px] aspect-square flex items-center justify-center">
               {/* Headset Image */}
-              <div className="relative z-10 w-[280px] sm:w-[340px] lg:w-[410px] aspect-square flex items-center justify-center p-0">
+              <div className="relative z-10 -translate-x-8 sm:-translate-x-12 lg:-translate-x-16 w-[280px] sm:w-[340px] lg:w-[410px] aspect-square flex items-center justify-center p-0">
                 <img
                   src={heroHeadsetImage}
                   alt="VTG Professional Headset"
