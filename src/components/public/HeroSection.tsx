@@ -19,6 +19,14 @@ export const HeroSection: React.FC = () => {
       id="home"
       className="relative pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-12 sm:pb-16 lg:pb-24 overflow-hidden bg-white"
     >
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute right-[8%] top-32 size-[360px] rounded-full bg-red-50/70 blur-[1px] sm:size-[480px] lg:size-[560px]" />
+        <div className="absolute right-[17%] top-56 hidden grid-cols-6 gap-3 text-[#B91C1C]/35 sm:grid">
+          {Array.from({ length: 36 }).map((_, index) => (
+            <span key={index} className="size-1 rounded-full bg-current" />
+          ))}
+        </div>
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {/* Left Column: Badge, Typography, Buttons & Desktop Stats */}
