@@ -1,0 +1,6 @@
+{
+  "name": "Vigorous Telemarketing Group",
+  "description": "Premier BPO & telemarketing company website with comprehensive admin management panel for applicants, agents, campaigns, and content uploads.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
