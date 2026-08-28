@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { TrendingUp, Headphones, Users, Star, ArrowRight } from 'lucide-react';
-import defaultHeadsetImage from '../../assets/images/headset_isolated_1787931086549.jpg';
+const defaultHeadsetImage = '/assets/images/headset_hero_1787877116496.jpg';
 
 export const HeroSection: React.FC = () => {
   const { activeHeroImage, setIsContactModalOpen, setPublicPage } = useApp();
@@ -19,14 +19,6 @@ export const HeroSection: React.FC = () => {
       id="home"
       className="relative pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-12 sm:pb-16 lg:pb-24 overflow-hidden bg-white"
     >
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute right-[8%] top-32 size-[360px] rounded-full bg-red-50/70 blur-[1px] sm:size-[480px] lg:size-[560px]" />
-        <div className="absolute right-[17%] top-56 hidden grid-cols-6 gap-3 text-[#B91C1C]/35 sm:grid">
-          {Array.from({ length: 36 }).map((_, index) => (
-            <span key={index} className="size-1 rounded-full bg-current" />
-          ))}
-        </div>
-      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {/* Left Column: Badge, Typography, Buttons & Desktop Stats */}
@@ -108,12 +100,12 @@ export const HeroSection: React.FC = () => {
             {/* Clean Headset Container with No Clutter Background */}
             <div className="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[440px] aspect-square flex items-center justify-center">
               {/* Headset Image */}
-              <div className="relative z-10 w-[260px] sm:w-[320px] lg:w-[380px] aspect-square flex items-center justify-center p-2">
+              <div className="relative z-10 w-[280px] sm:w-[340px] lg:w-[410px] aspect-square flex items-center justify-center p-0">
                 <img
                   src={heroHeadsetImage}
                   alt="VTG Professional Headset"
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+                  className="w-full h-full scale-125 object-contain brightness-110 contrast-125 mix-blend-multiply transition-transform duration-500 hover:scale-[1.3]"
                 />
               </div>
 
