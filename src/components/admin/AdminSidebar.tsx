@@ -13,7 +13,6 @@ import {
   Image as ImageIcon,
   HelpCircle,
   LogOut,
-  ExternalLink,
 } from 'lucide-react';
 
 export const AdminSidebar: React.FC = () => {
@@ -110,13 +109,13 @@ export const AdminSidebar: React.FC = () => {
           id="admin-logout-btn"
           onClick={() => setCurrentView('public')}
           className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-red-700 hover:bg-red-50 transition-colors"
-          title="Return to Public Website"
+          title="Log out"
         >
           <div className="flex items-center gap-3">
             <LogOut className="w-4 h-4" />
-            {!sidebarCollapsed && <span>Return to Website</span>}
+            {!sidebarCollapsed && <span>Log out</span>}
           </div>
-          {!sidebarCollapsed && <ExternalLink className="w-3 h-3 opacity-60" />}
+
         </button>
       </div>
     </aside>

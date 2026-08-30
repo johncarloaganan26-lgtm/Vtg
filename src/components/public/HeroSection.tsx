@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { TrendingUp, Headphones, Users, Star, ArrowRight } from 'lucide-react';
-const defaultHeadsetImage = '/assets/images/headset_hero_1787877116496.jpg';
+const defaultHeadsetImage = '/assets/images/headset-transparent.png';
 
 export const HeroSection: React.FC = () => {
   const { activeHeroImage, setIsContactModalOpen, setPublicPage } = useApp();

@@ -7,10 +7,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  LineChart,
-  Line,
 } from 'recharts';
-import { Download, TrendingUp, Award, Calendar, CheckCircle2 } from 'lucide-react';
+import { Download, Award, CheckCircle2 } from 'lucide-react';
 
 export const PerformanceView: React.FC = () => {
   const [downloadSuccess, setDownloadSuccess] = useState(false);
