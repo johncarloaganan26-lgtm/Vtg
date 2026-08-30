@@ -5,7 +5,6 @@ import {
   Search,
   Bell,
   CheckCircle2,
-  ExternalLink,
   ChevronDown,
   User,
   Shield,
@@ -19,7 +18,6 @@ export const AdminHeader: React.FC = () => {
     unreadNotificationCount,
     notifications,
     markAllNotificationsRead,
-    setCurrentView,
     adminSearchQuery,
     setAdminSearchQuery,
     setAdminSection,
@@ -65,15 +63,6 @@ export const AdminHeader: React.FC = () => {
 
       {/* Right Controls */}
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Quick Return to Public Site Button */}
-        <button
-          onClick={() => setCurrentView('public')}
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 hover:text-red-700 bg-slate-50 hover:bg-red-50 border border-slate-200 rounded-lg transition-all"
-        >
-          <span>View Website</span>
-          <ExternalLink className="w-3 h-3" />
-        </button>
-
         {/* Notification Bell with Badge 5 matching screenshot */}
         <div className="relative">
           <button
@@ -95,8 +84,8 @@ export const AdminHeader: React.FC = () => {
 
           {/* Notifications Dropdown */}
           {notificationsOpen && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-50 animate-in fade-in duration-150">
-              <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+            <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-96 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-50 animate-in fade-in duration-150">
+              <div className="p-3 sm:p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
                     Notifications
@@ -117,7 +106,7 @@ export const AdminHeader: React.FC = () => {
                 {notifications.map((notif) => (
                   <div
                     key={notif.id}
-                    className={`p-3.5 hover:bg-slate-50 transition-colors ${
+                    className={`p-3.5 sm:p-4 hover:bg-slate-50 transition-colors ${
                       notif.unread ? 'bg-red-50/20' : ''
                     }`}
                   >
@@ -208,15 +197,6 @@ export const AdminHeader: React.FC = () => {
                 <span>Content & Image Panel</span>
               </button>
 
-              <div className="my-1 border-t border-slate-100" />
-
-              <button
-                onClick={() => setCurrentView('public')}
-                className="w-full px-4 py-2 text-left text-xs font-bold text-red-700 hover:bg-red-50 flex items-center gap-2"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Switch to Public Site</span>
-              </button>
             </div>
           )}
         </div>

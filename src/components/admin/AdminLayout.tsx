@@ -27,7 +27,6 @@ export const AdminLayout: React.FC = () => {
       case 'campaigns':
         return <CampaignsView />;
       case 'performance':
-      case 'reports':
         return <PerformanceView />;
       case 'media':
         return <MediaUploadsPanel />;
@@ -56,7 +55,7 @@ export const AdminLayout: React.FC = () => {
       {/* Main Admin Content Canvas */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         <AdminHeader />
-        <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 px-3 py-4 sm:p-8 max-w-7xl w-full mx-auto">
           {renderSection()}
         </main>
       </div>

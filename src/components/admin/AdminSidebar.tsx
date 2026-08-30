@@ -7,13 +7,10 @@ import {
   Headphones,
   Megaphone,
   BarChart3,
-  FileText,
   MessageSquare,
   Settings,
   Image as ImageIcon,
-  HelpCircle,
   LogOut,
-  ExternalLink,
 } from 'lucide-react';
 
 export const AdminSidebar: React.FC = () => {
@@ -31,7 +28,6 @@ export const AdminSidebar: React.FC = () => {
     { id: 'agents', label: 'Agents', icon: Headphones },
     { id: 'campaigns', label: 'Campaigns', icon: Megaphone },
     { id: 'performance', label: 'Performance', icon: BarChart3 },
-    { id: 'reports', label: 'Reports', icon: FileText },
     { id: 'messages', label: 'Messages', icon: MessageSquare, badge: '3', badgeColor: 'bg-red-700 text-white' },
     { id: 'media', label: 'Image & Content Panel', icon: ImageIcon, highlight: true },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -67,7 +63,7 @@ export const AdminSidebar: React.FC = () => {
                 onClick={() => setAdminSection(item.id)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
                   isActive
-                    ? 'bg-red-50/80 text-[#B91C1C] shadow-2xs border-l-4 border-[#B91C1C]'
+                    ? 'bg-red-50/80 text-[#B91C1C] shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 } ${item.highlight && !isActive ? 'text-red-800 bg-red-50/30' : ''}`}
                 title={item.label}
@@ -99,24 +95,16 @@ export const AdminSidebar: React.FC = () => {
       {/* Bottom Section matching screenshot */}
       <div className="p-4 border-t border-slate-100 space-y-1.5">
         <button
-          onClick={() => alert('Support line: support@vigoroustelemarketing.com | Ext: 108')}
-          className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-        >
-          <HelpCircle className="w-4 h-4 text-slate-500" />
-          {!sidebarCollapsed && <span>Help & Support</span>}
-        </button>
-
-        <button
           id="admin-logout-btn"
           onClick={() => setCurrentView('public')}
           className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-red-700 hover:bg-red-50 transition-colors"
-          title="Return to Public Website"
+          title="Log out"
         >
           <div className="flex items-center gap-3">
             <LogOut className="w-4 h-4" />
-            {!sidebarCollapsed && <span>Return to Website</span>}
+            {!sidebarCollapsed && <span>Log out</span>}
           </div>
-          {!sidebarCollapsed && <ExternalLink className="w-3 h-3 opacity-60" />}
+
         </button>
       </div>
     </aside>

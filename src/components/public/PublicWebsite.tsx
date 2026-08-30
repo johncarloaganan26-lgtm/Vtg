@@ -6,6 +6,7 @@ import { SolutionsSection } from './SolutionsSection';
 import { WhyChooseUsSection } from './WhyChooseUsSection';
 import { TestimonialsSection } from './TestimonialsSection';
 import { FaqSection } from './FaqSection';
+import { CtaBanner } from './CtaBanner';
 import { Footer } from './Footer';
 import { ApplyModal } from './ApplyModal';
 import { ContactModal } from './ContactModal';
@@ -39,6 +40,7 @@ export const PublicWebsite: React.FC = () => {
             <WhyChooseUsSection />
             <TestimonialsSection />
             <FaqSection />
+            <CtaBanner />
           </>
         );
     }

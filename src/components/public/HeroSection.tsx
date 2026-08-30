@@ -1,26 +1,22 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { TrendingUp, Headphones, Users, Star, ArrowRight } from 'lucide-react';
-import defaultHeadsetImage from '../../assets/images/headset_isolated_1787931086549.jpg';
+const defaultHeadsetImage = '/assets/images/headset-transparent.png';
 
 export const HeroSection: React.FC = () => {
-  const { activeHeroImage, setIsContactModalOpen, setPublicPage } = useApp();
+  const { setIsContactModalOpen, setPublicPage } = useApp();
 
-  // Use the isolated studio headset image or user-configured activeHeroImage
-  const heroHeadsetImage =
-    activeHeroImage &&
-    !activeHeroImage.includes('headset_hero_1787877116496') &&
-    !activeHeroImage.includes('headset_product_1787880660062')
-      ? activeHeroImage
-      : defaultHeadsetImage;
+  // Use the supplied transparent headset in the home hero.
+  const heroHeadsetImage = defaultHeadsetImage;
 
   return (
     <section
       id="home"
-      className="relative pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-12 sm:pb-16 lg:pb-24 overflow-hidden bg-white"
+      className="relative pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-6 sm:pb-10 lg:pb-24 overflow-hidden bg-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 lg:gap-10 items-center">
+          {/* On mobile the existing hero blocks naturally stack as text, headset, feature card, and stats. */}
           {/* Left Column: Badge, Typography, Buttons & Desktop Stats */}
           <div className="lg:col-span-7 flex flex-col items-start z-10">
             {/* Top Pill Badge */}
@@ -51,7 +47,7 @@ export const HeroSection: React.FC = () => {
             </p>
 
             {/* Action Buttons Row */}
-            <div className="flex flex-wrap items-center gap-3.5 sm:gap-4 mb-8 lg:mb-12">
+            <div className="flex flex-wrap items-center gap-3.5 sm:gap-4 mb-4 sm:mb-8 lg:mb-12">
               <button
                 id="hero-cta-talk"
                 onClick={() => setIsContactModalOpen(true)}
@@ -96,23 +92,23 @@ export const HeroSection: React.FC = () => {
           </div>
 
           {/* Right Column: Clean Headset Showcase + Floating 3-Feature Card */}
-          <div className="lg:col-span-5 relative flex flex-col items-center justify-center w-full">
+          <div className="lg:col-span-5 relative -mt-8 sm:-mt-4 lg:mt-0 flex flex-col items-center justify-center w-full">
             {/* Clean Headset Container with No Clutter Background */}
-            <div className="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[440px] aspect-square flex items-center justify-center">
+            <div className="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[440px] h-[260px] sm:h-[320px] lg:h-auto lg:aspect-square flex items-center justify-center">
               {/* Headset Image */}
-              <div className="relative z-10 w-[260px] sm:w-[320px] lg:w-[380px] aspect-square flex items-center justify-center p-2">
+              <div className="relative z-10 -translate-x-8 sm:-translate-x-12 lg:-translate-x-16 w-[280px] sm:w-[340px] lg:w-[410px] aspect-square flex items-center justify-center p-0">
                 <img
                   src={heroHeadsetImage}
                   alt="VTG Professional Headset"
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+                  className="w-full h-full scale-125 object-contain brightness-110 contrast-125 mix-blend-multiply transition-transform duration-500 hover:scale-[1.3]"
                 />
               </div>
 
               {/* Desktop Floating White 3-Feature Card (Overlapping bottom right) */}
               <div
                 id="hero-features-card-desktop"
-                className="hidden lg:block absolute -bottom-6 -right-6 z-20 bg-white rounded-2xl p-4 sm:p-5 shadow-xl shadow-slate-900/10 border border-slate-100 min-w-[240px]"
+                className="hidden lg:block absolute -bottom-10 right-0 z-20 bg-white rounded-2xl p-4 sm:p-5 shadow-xl shadow-slate-900/10 border border-slate-100 min-w-[240px]"
               >
                 <div className="space-y-3">
                   {/* Row 1 */}
@@ -151,7 +147,7 @@ export const HeroSection: React.FC = () => {
             {/* Mobile Floating White 3-Feature Card (Centered directly beneath headset) */}
             <div
               id="hero-features-card-mobile"
-              className="lg:hidden w-full max-w-sm mx-auto mt-6 bg-white rounded-2xl p-4 shadow-lg shadow-slate-900/5 border border-slate-100"
+              className="lg:hidden w-full max-w-sm mx-auto mt-0 bg-white rounded-2xl p-4 shadow-lg shadow-slate-900/5 border border-slate-100"
             >
               <div className="space-y-3">
                 {/* Row 1 */}

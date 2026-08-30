@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { VTGLogo } from '../common/VTGLogo';
 import { useApp, PublicPage } from '../../context/AppContext';
-import { Briefcase, Menu, X, ArrowRight } from 'lucide-react';
+import { Briefcase, Menu, X } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { publicPage, setPublicPage } = useApp();
@@ -84,7 +84,6 @@ export const Navbar: React.FC = () => {
               >
                 <Briefcase className="w-3.5 h-3.5 text-white group-hover:scale-110 transition-transform" />
                 <span className="tracking-wide">APPLY NOW</span>
-                <ArrowRight className="w-3.5 h-3.5 text-white transition-transform group-hover:translate-x-0.5" />
               </button>
             </div>
 
@@ -94,7 +93,7 @@ export const Navbar: React.FC = () => {
               <button
                 id="mobile-nav-apply-btn"
                 onClick={() => handleNavClick('apply')}
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-white bg-[#8B151E] hover:bg-[#720E15] active:scale-95 rounded-full shadow-xs cursor-pointer whitespace-nowrap"
+                className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-white bg-[#8B151E] hover:bg-[#720E15] active:scale-95 rounded-full shadow-xs cursor-pointer whitespace-nowrap"
               >
                 <Briefcase className="w-3 h-3 text-white flex-shrink-0" />
                 <span>Apply Now</span>
