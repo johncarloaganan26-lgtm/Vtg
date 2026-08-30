@@ -4,15 +4,10 @@ import { TrendingUp, Headphones, Users, Star, ArrowRight } from 'lucide-react';
 const defaultHeadsetImage = '/assets/images/headset-transparent.png';
 
 export const HeroSection: React.FC = () => {
-  const { activeHeroImage, setIsContactModalOpen, setPublicPage } = useApp();
+  const { setIsContactModalOpen, setPublicPage } = useApp();
 
-  // Use the isolated studio headset image or user-configured activeHeroImage
-  const heroHeadsetImage =
-    activeHeroImage &&
-    !activeHeroImage.includes('headset_hero_1787877116496') &&
-    !activeHeroImage.includes('headset_product_1787880660062')
-      ? activeHeroImage
-      : defaultHeadsetImage;
+  // Use the supplied transparent headset in the home hero.
+  const heroHeadsetImage = defaultHeadsetImage;
 
   return (
     <section
