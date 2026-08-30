@@ -10,7 +10,6 @@ import {
   MessageSquare,
   Settings,
   Image as ImageIcon,
-  HelpCircle,
   LogOut,
 } from 'lucide-react';
 
@@ -95,14 +94,6 @@ export const AdminSidebar: React.FC = () => {
 
       {/* Bottom Section matching screenshot */}
       <div className="p-4 border-t border-slate-100 space-y-1.5">
-        <button
-          onClick={() => alert('Support line: support@vigoroustelemarketing.com | Ext: 108')}
-          className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-        >
-          <HelpCircle className="w-4 h-4 text-slate-500" />
-          {!sidebarCollapsed && <span>Help & Support</span>}
-        </button>
-
         <button
           id="admin-logout-btn"
           onClick={() => setCurrentView('public')}

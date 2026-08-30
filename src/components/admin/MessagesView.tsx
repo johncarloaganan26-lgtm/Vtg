@@ -57,7 +57,7 @@ export const MessagesView: React.FC = () => {
   };
 
   return (
-    <div id="admin-messages-view" className="space-y-6 animate-in fade-in duration-200">
+    <div id="admin-messages-view" className="flex flex-col gap-4 sm:gap-6 animate-in fade-in duration-200">
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -68,9 +68,9 @@ export const MessagesView: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden min-h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-6 bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden min-h-[600px]">
         {/* Left: Messages List */}
-        <div className="lg:col-span-5 border-r border-slate-100 flex flex-col">
+        <div className="lg:col-span-5 lg:border-r border-slate-100 flex flex-col">
           <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
             <span className="text-xs font-bold uppercase text-slate-700">
               Inbox ({allMessages.length} Proposals)
