@@ -36,7 +36,7 @@ export const PageHero: React.FC<PageHeroProps> = ({
           referrerPolicy="no-referrer"
         />
         {/* Dark Gradient Overlay for text readability on left while revealing photo on right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/45 to-slate-950/15" />
       </div>
 
       {/* Content Container - Left Aligned exactly like the reference screenshot */}

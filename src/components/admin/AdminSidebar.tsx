@@ -67,7 +67,7 @@ export const AdminSidebar: React.FC = () => {
                 onClick={() => setAdminSection(item.id)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
                   isActive
-                    ? 'bg-red-50/80 text-[#B91C1C] shadow-2xs border-l-4 border-[#B91C1C]'
+                    ? 'bg-red-50/80 text-[#B91C1C] shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 } ${item.highlight && !isActive ? 'text-red-800 bg-red-50/30' : ''}`}
                 title={item.label}

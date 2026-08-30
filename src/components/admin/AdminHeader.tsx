@@ -65,15 +65,6 @@ export const AdminHeader: React.FC = () => {
 
       {/* Right Controls */}
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Quick Return to Public Site Button */}
-        <button
-          onClick={() => setCurrentView('public')}
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 hover:text-red-700 bg-slate-50 hover:bg-red-50 border border-slate-200 rounded-lg transition-all"
-        >
-          <span>View Website</span>
-          <ExternalLink className="w-3 h-3" />
-        </button>
-
         {/* Notification Bell with Badge 5 matching screenshot */}
         <div className="relative">
           <button
