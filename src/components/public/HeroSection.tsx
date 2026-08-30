@@ -16,6 +16,7 @@ export const HeroSection: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          {/* On mobile the existing hero blocks naturally stack as text, headset, feature card, and stats. */}
           {/* Left Column: Badge, Typography, Buttons & Desktop Stats */}
           <div className="lg:col-span-7 flex flex-col items-start z-10">
             {/* Top Pill Badge */}

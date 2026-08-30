@@ -27,7 +27,6 @@ export const AdminLayout: React.FC = () => {
       case 'campaigns':
         return <CampaignsView />;
       case 'performance':
-      case 'reports':
         return <PerformanceView />;
       case 'media':
         return <MediaUploadsPanel />;
