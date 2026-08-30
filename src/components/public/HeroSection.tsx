@@ -107,7 +107,7 @@ export const HeroSection: React.FC = () => {
               {/* Desktop Floating White 3-Feature Card (Overlapping bottom right) */}
               <div
                 id="hero-features-card-desktop"
-                className="hidden lg:block absolute -bottom-6 -right-6 z-20 bg-white rounded-2xl p-4 sm:p-5 shadow-xl shadow-slate-900/10 border border-slate-100 min-w-[240px]"
+                className="hidden lg:block absolute -bottom-10 right-0 z-20 bg-white rounded-2xl p-4 sm:p-5 shadow-xl shadow-slate-900/10 border border-slate-100 min-w-[240px]"
               >
                 <div className="space-y-3">
                   {/* Row 1 */}
