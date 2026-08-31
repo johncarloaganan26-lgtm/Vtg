@@ -20,15 +20,31 @@ export const AdminSidebar: React.FC = () => {
     setCurrentView,
     sidebarCollapsed,
     unreadNotificationCount,
+    applicants,
+    inquiries,
   } = useApp();
+
+  const newApplicantsCount = applicants.filter((a) => a.status === 'New Applicant').length || applicants.length;
+  const messagesCount = (inquiries?.length || 0) > 0 ? inquiries.length : 0;
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'applicants', label: 'Applicants', icon: Users, badge: '7' },
+    {
+      id: 'applicants',
+      label: 'Applicants',
+      icon: Users,
+      badge: newApplicantsCount > 0 ? String(newApplicantsCount) : undefined,
+    },
     { id: 'agents', label: 'Agents', icon: Headphones },
     { id: 'campaigns', label: 'Campaigns', icon: Megaphone },
     { id: 'performance', label: 'Performance', icon: BarChart3 },
-    { id: 'messages', label: 'Messages', icon: MessageSquare, badge: '3', badgeColor: 'bg-red-700 text-white' },
+    {
+      id: 'messages',
+      label: 'Messages',
+      icon: MessageSquare,
+      badge: messagesCount > 0 ? String(messagesCount) : undefined,
+      badgeColor: 'bg-red-700 text-white',
+    },
     { id: 'media', label: 'Image & Content Panel', icon: ImageIcon, highlight: true },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];

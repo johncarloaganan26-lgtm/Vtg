@@ -231,17 +231,22 @@ export const ContactPage: React.FC = () => {
               </div>
 
               {submitted ? (
-                <div className="rounded-2xl bg-red-50/70 border border-red-200 p-8 text-center space-y-4">
-                  <div className="w-14 h-14 rounded-full bg-[#8B151E] text-white flex items-center justify-center mx-auto shadow-md">
+                <div className="rounded-2xl bg-emerald-50/80 border border-emerald-200/90 p-8 text-center space-y-4 shadow-2xs">
+                  <div className="w-14 h-14 rounded-full bg-emerald-600 text-white flex items-center justify-center mx-auto shadow-md shadow-emerald-600/20">
                     <CheckCircle className="w-7 h-7" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900">Proposal Request Received!</h3>
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-100/80 text-emerald-800 text-[11px] font-bold uppercase tracking-wider mb-2">
+                      Inquiry Received
+                    </span>
+                    <h3 className="text-xl font-bold text-slate-900">Proposal Request Received!</h3>
+                  </div>
                   <p className="text-sm text-slate-700 max-w-md mx-auto leading-relaxed">
-                    Thank you, <span className="font-bold">{formData.fullNameTitle}</span>. Our
+                    Thank you, <span className="font-bold text-slate-900">{formData.fullNameTitle}</span>. Our
                     solutions team has received your inquiry for{' '}
-                    <span className="font-bold">{formData.service}</span> ({formData.podSize}). We will
+                    <span className="font-bold text-emerald-700">{formData.service}</span> ({formData.podSize}). We will
                     review your specifications and connect with you at{' '}
-                    <span className="font-bold">{formData.corporateEmail}</span> within 24 hours.
+                    <span className="font-bold text-slate-900">{formData.corporateEmail}</span> within 24 hours.
                   </p>
                   <button
                     onClick={() => {
@@ -258,7 +263,7 @@ export const ContactPage: React.FC = () => {
                         message: '',
                       });
                     }}
-                    className="mt-4 px-6 py-2.5 rounded-full bg-white border border-slate-300 text-xs font-bold uppercase text-slate-700 hover:bg-slate-50 cursor-pointer"
+                    className="mt-4 px-6 py-2.5 rounded-full bg-white border border-emerald-300 text-xs font-bold uppercase text-emerald-800 hover:bg-emerald-50 transition-colors cursor-pointer shadow-2xs"
                   >
                     Submit Another Inquiry
                   </button>

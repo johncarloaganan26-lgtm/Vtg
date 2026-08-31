@@ -14,10 +14,12 @@ export const AgentsView: React.FC = () => {
   const [role, setRole] = useState('Outbound Sales Specialist');
   const [pod, setPod] = useState('Pod Alpha (FinTech)');
 
-  const pods = ['All', 'Pod Alpha (FinTech)', 'Pod Bravo (Real Estate)', 'Pod Charlie (HealthPlus)', 'Pod Delta (SaaS Support)'];
+  // Extract dynamic list of pods from agents
+  const dynamicPods = ['All', ...Array.from(new Set(agents.map((a) => a.pod)))];
+  const uniquePodsCount = new Set(agents.map((a) => a.pod)).size;
 
   const filteredAgents = agents.filter((agt) => {
-    const matchesPod = selectedPod === 'All' || agt.pod.includes(selectedPod.split(' ')[1] || '');
+    const matchesPod = selectedPod === 'All' || agt.pod === selectedPod || agt.pod.includes(selectedPod.split(' ')[1] || '');
     const matchesSearch = agt.name.toLowerCase().includes(agentSearch.toLowerCase()) || agt.role.toLowerCase().includes(agentSearch.toLowerCase());
     return matchesPod && matchesSearch;
   });
@@ -64,7 +66,7 @@ export const AgentsView: React.FC = () => {
             Active Agents Directory
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-            Real-time status, QA evaluation scores, and daily call statistics across 100+ pods.
+            Real-time status, QA evaluation scores, and daily call statistics across {uniquePodsCount} active pods.
           </p>
         </div>
 
@@ -80,7 +82,7 @@ export const AgentsView: React.FC = () => {
       {/* Filter and Search */}
       <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
-          {pods.map((p) => (
+          {dynamicPods.map((p) => (
             <button
               key={p}
               onClick={() => setSelectedPod(p)}

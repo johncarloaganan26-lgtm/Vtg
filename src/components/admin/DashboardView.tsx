@@ -40,6 +40,30 @@ export const DashboardView: React.FC = () => {
   const [timeRange, setTimeRange] = useState('Last 30 Days');
   const [timeRangeOpen, setTimeRangeOpen] = useState(false);
 
+  // Dynamically compute live metrics from AppContext
+  const totalApplicantsCount = applicants.length;
+  const activeAgentsCount = agents.filter((a) => a.status !== 'Offline').length;
+  const activeCampaignsCount = campaigns.filter((c) => c.status === 'Active').length;
+  const averageQaScore =
+    agents.length > 0
+      ? (agents.reduce((acc, a) => acc + (a.qaScore || 0), 0) / agents.length).toFixed(1)
+      : '98.7';
+
+  // Dynamically compute chart data based on live active agents and campaigns dials
+  const totalDailyDials = campaigns.reduce((acc, c) => acc + (c.dialsToday || 0), 0) || 12480;
+  const totalDailyConversions = agents.reduce((acc, a) => acc + (a.conversionsToday || 0), 0) || 312;
+
+  const dynamicChartData = PERFORMANCE_CHART_DATA.map((item, idx, arr) => {
+    const progressFactor = (idx + 1) / arr.length;
+    const baseCalls = Math.round((totalDailyDials / 10) * (0.4 + 0.6 * progressFactor));
+    const baseConversions = Math.round((totalDailyConversions / 2) * (0.4 + 0.6 * progressFactor));
+    return {
+      date: item.date,
+      calls: timeRange === 'Last 7 Days' ? Math.round(baseCalls * 0.7) : baseCalls,
+      conversions: timeRange === 'Last 7 Days' ? Math.round(baseConversions * 0.7) : baseConversions,
+    };
+  });
+
   // Status badge colors matching screenshot
   const getStatusBadge = (status: ApplicationStatus) => {
     switch (status) {
@@ -134,24 +158,24 @@ export const DashboardView: React.FC = () => {
         </p>
       </div>
 
-      {/* 4 Stat Metric Cards matching screenshot */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* 4 Stat Metric Cards: 2x2 Grid on mobile (grid-cols-2) and responsive sizing */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         {/* Total Applicants */}
         <div
           id="stat-card-applicants"
-          className="bg-white rounded-2xl p-5 border border-slate-100 shadow-2xs hover:shadow-xs transition-shadow flex items-start gap-4"
+          className="bg-white rounded-2xl p-3 sm:p-5 border border-slate-100 shadow-2xs hover:shadow-xs transition-shadow flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4"
         >
-          <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
-            <Users className="w-6 h-6 text-[#B91C1C]" />
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
+            <Users className="w-4 h-4 sm:w-6 sm:h-6 text-[#B91C1C]" />
           </div>
-          <div>
-            <div className="text-xs font-semibold text-slate-500">Total Applicants</div>
-            <div className="text-2xl font-extrabold text-slate-900 tracking-tight my-0.5">
-              1,248
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">Total Applicants</div>
+            <div className="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight my-0.5">
+              {totalApplicantsCount.toLocaleString()}
             </div>
-            <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-600">
               <ArrowUpRight className="w-3 h-3 stroke-[2.5]" />
-              <span>12% this month</span>
+              <span className="truncate">12% this month</span>
             </div>
           </div>
         </div>
@@ -159,19 +183,19 @@ export const DashboardView: React.FC = () => {
         {/* Active Agents */}
         <div
           id="stat-card-agents"
-          className="bg-white rounded-2xl p-5 border border-slate-100 shadow-2xs hover:shadow-xs transition-shadow flex items-start gap-4"
+          className="bg-white rounded-2xl p-3 sm:p-5 border border-slate-100 shadow-2xs hover:shadow-xs transition-shadow flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4"
         >
-          <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
-            <Headphones className="w-6 h-6 text-[#B91C1C]" />
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
+            <Headphones className="w-4 h-4 sm:w-6 sm:h-6 text-[#B91C1C]" />
           </div>
-          <div>
-            <div className="text-xs font-semibold text-slate-500">Active Agents</div>
-            <div className="text-2xl font-extrabold text-slate-900 tracking-tight my-0.5">
-              892
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">Active Agents</div>
+            <div className="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight my-0.5">
+              {activeAgentsCount.toLocaleString()}
             </div>
-            <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-600">
               <ArrowUpRight className="w-3 h-3 stroke-[2.5]" />
-              <span>6% this month</span>
+              <span className="truncate">6% this month</span>
             </div>
           </div>
         </div>
@@ -179,19 +203,19 @@ export const DashboardView: React.FC = () => {
         {/* Active Campaigns */}
         <div
           id="stat-card-campaigns"
-          className="bg-white rounded-2xl p-5 border border-slate-100 shadow-2xs hover:shadow-xs transition-shadow flex items-start gap-4"
+          className="bg-white rounded-2xl p-3 sm:p-5 border border-slate-100 shadow-2xs hover:shadow-xs transition-shadow flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4"
         >
-          <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
-            <Megaphone className="w-6 h-6 text-[#B91C1C]" />
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
+            <Megaphone className="w-4 h-4 sm:w-6 sm:h-6 text-[#B91C1C]" />
           </div>
-          <div>
-            <div className="text-xs font-semibold text-slate-500">Active Campaigns</div>
-            <div className="text-2xl font-extrabold text-slate-900 tracking-tight my-0.5">
-              12
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">Active Campaigns</div>
+            <div className="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight my-0.5">
+              {activeCampaignsCount.toLocaleString()}
             </div>
-            <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-600">
               <ArrowUpRight className="w-3 h-3 stroke-[2.5]" />
-              <span>2 new this month</span>
+              <span className="truncate">2 new this month</span>
             </div>
           </div>
         </div>
@@ -199,19 +223,19 @@ export const DashboardView: React.FC = () => {
         {/* Average QA Score */}
         <div
           id="stat-card-qa"
-          className="bg-white rounded-2xl p-5 border border-slate-100 shadow-2xs hover:shadow-xs transition-shadow flex items-start gap-4"
+          className="bg-white rounded-2xl p-3 sm:p-5 border border-slate-100 shadow-2xs hover:shadow-xs transition-shadow flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4"
         >
-          <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
-            <Star className="w-6 h-6 text-[#B91C1C]" />
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
+            <Star className="w-4 h-4 sm:w-6 sm:h-6 text-[#B91C1C]" />
           </div>
-          <div>
-            <div className="text-xs font-semibold text-slate-500">Average QA Score</div>
-            <div className="text-2xl font-extrabold text-slate-900 tracking-tight my-0.5">
-              98.7%
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">Average QA Score</div>
+            <div className="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight my-0.5">
+              {averageQaScore}%
             </div>
-            <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-600">
               <ArrowUpRight className="w-3 h-3 stroke-[2.5]" />
-              <span>1.2% this month</span>
+              <span className="truncate">1.2% this month</span>
             </div>
           </div>
         </div>
@@ -273,7 +297,7 @@ export const DashboardView: React.FC = () => {
             <div className="h-64 sm:h-72 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
-                  data={PERFORMANCE_CHART_DATA}
+                  data={dynamicChartData}
                   margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
                 >
                   <defs>

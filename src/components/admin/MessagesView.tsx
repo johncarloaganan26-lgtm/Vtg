@@ -3,44 +3,24 @@ import { Mail, CheckCircle2, Send, Building, Phone, Calendar, Users, Briefcase }
 import { useApp } from '../../context/AppContext';
 
 export const MessagesView: React.FC = () => {
-  const { campaignInquiries } = useApp();
+  const { inquiries, campaignInquiries } = useApp();
+  const liveInquiries = (campaignInquiries || inquiries || []).map((inq) => ({
+    id: inq.id,
+    fullName: inq.fullNameTitle || 'Enterprise Inquirer',
+    companyName: inq.company || 'Client Organization',
+    workEmail: inq.email || 'contact@client.com',
+    phone: inq.phone || 'N/A',
+    serviceRequired: inq.service || 'BPO & Telemarketing',
+    agentsNeeded: inq.podSize || 'Custom Pod',
+    timeline: inq.targetMarket ? `Market: ${inq.targetMarket}` : 'Immediate / Flexible',
+    budget: 'Custom SLA Card',
+    campaignDetails: inq.brief || 'No briefing details provided.',
+    createdAt: inq.submittedAt || 'Recent submission',
+    status: 'New' as const,
+  }));
 
-  // Combine live campaign inquiries with initial sample inquiries
-  const initialInquiries = [
-    {
-      id: 'demo-1',
-      fullName: 'David Miller',
-      companyName: 'Apex Healthcare Solutions LLC',
-      workEmail: 'dmiller@apexhealth.com',
-      phone: '+1 (555) 234-8901',
-      serviceRequired: 'Appointment Setting',
-      agentsNeeded: '16–30 agents',
-      timeline: 'Within 2 weeks',
-      budget: '$20k–$50k/mo',
-      campaignDetails:
-        'Hi Vigorous Telemarketing Team,\n\nWe are looking to partner with an established Philippine BPO to deploy a dedicated 30-agent outbound team for our healthcare appointment setting campaign. We require HIPAA compliant infrastructure, dedicated QA, and PST shift coverage.\n\nCould we schedule a call this Thursday at 2:00 PM PST to review pricing and SLA benchmarks?',
-      createdAt: 'Today, 10:45 AM',
-      status: 'New' as const,
-    },
-    {
-      id: 'demo-2',
-      fullName: 'Sarah Jenkins',
-      companyName: 'SolarEdge UK',
-      workEmail: 's.jenkins@solaredge.co.uk',
-      phone: '+44 20 7946 0912',
-      serviceRequired: 'Outbound Telesales & Closers',
-      agentsNeeded: '6–15 agents',
-      timeline: '1–2 months',
-      budget: '$10k–$20k/mo',
-      campaignDetails:
-        'Requesting updated rate card and agent profile samples for UK residential solar appointment setting. We need native English accent and dialed timezone coverage from 9am to 6pm GMT.',
-      createdAt: 'Yesterday, 3:15 PM',
-      status: 'Contacted' as const,
-    },
-  ];
-
-  const allMessages = [...campaignInquiries, ...initialInquiries];
-  const [selectedId, setSelectedId] = useState<string>(allMessages[0]?.id || 'demo-1');
+  const allMessages = liveInquiries;
+  const [selectedId, setSelectedId] = useState<string>(allMessages[0]?.id || '');
   const selectedMessage = allMessages.find((m) => m.id === selectedId) || allMessages[0];
 
   const [replyText, setReplyText] = useState('');
@@ -76,42 +56,48 @@ export const MessagesView: React.FC = () => {
               Inbox ({allMessages.length} Proposals)
             </span>
             <span className="px-2 py-0.5 rounded-full bg-red-100 text-[#8B151E] text-[10px] font-bold">
-              {campaignInquiries.length > 0 ? `${campaignInquiries.length} Real-time` : 'Live'}
+              {liveInquiries.length > 0 ? `${liveInquiries.length} Real-time` : 'Live'}
             </span>
           </div>
 
           <div className="divide-y divide-slate-100 overflow-y-auto flex-1 max-h-[650px]">
-            {allMessages.map((msg) => (
-              <div
-                key={msg.id}
-                onClick={() => setSelectedId(msg.id)}
-                className={`p-4 cursor-pointer transition-colors ${
-                  selectedMessage?.id === msg.id
-                    ? 'bg-red-50/50 border-l-4 border-[#8B151E]'
-                    : 'hover:bg-slate-50'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-extrabold text-slate-900">{msg.fullName}</span>
-                  <span className="text-[10px] text-slate-400">{msg.createdAt}</span>
-                </div>
-                <div className="text-[11px] font-semibold text-slate-600 mb-1 flex items-center gap-1.5">
-                  <Building className="w-3 h-3 text-slate-400" />
-                  <span>{msg.companyName}</span>
-                </div>
-                <p className="text-xs text-slate-500 line-clamp-2 leading-normal">
-                  {msg.campaignDetails}
-                </p>
-                <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-red-50 text-[#8B151E]">
-                    {msg.serviceRequired}
-                  </span>
-                  <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-100 text-slate-600">
-                    {msg.agentsNeeded}
-                  </span>
-                </div>
+            {allMessages.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 text-xs">
+                No campaign proposals received yet. Submissions from the contact form will appear here in real-time.
               </div>
-            ))}
+            ) : (
+              allMessages.map((msg) => (
+                <div
+                  key={msg.id}
+                  onClick={() => setSelectedId(msg.id)}
+                  className={`p-4 cursor-pointer transition-colors ${
+                    selectedMessage?.id === msg.id
+                      ? 'bg-red-50/50 border-l-4 border-[#8B151E]'
+                      : 'hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-extrabold text-slate-900">{msg.fullName}</span>
+                    <span className="text-[10px] text-slate-400">{msg.createdAt}</span>
+                  </div>
+                  <div className="text-[11px] font-semibold text-slate-600 mb-1 flex items-center gap-1.5">
+                    <Building className="w-3 h-3 text-slate-400" />
+                    <span>{msg.companyName}</span>
+                  </div>
+                  <p className="text-xs text-slate-500 line-clamp-2 leading-normal">
+                    {msg.campaignDetails}
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-red-50 text-[#8B151E]">
+                      {msg.serviceRequired}
+                    </span>
+                    <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-100 text-slate-600">
+                      {msg.agentsNeeded}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

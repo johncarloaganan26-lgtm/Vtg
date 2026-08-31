@@ -16,6 +16,8 @@ import {
   INITIAL_MEDIA_ITEMS,
 } from '../data/initialData';
 
+import { supabase } from '../lib/supabase';
+
 export type PublicPage = 'home' | 'solutions' | 'about' | 'blog' | 'contact' | 'apply';
 
 interface NotificationItem {
@@ -47,6 +49,7 @@ interface AppContextType {
   deleteApplicant: (id: string) => void;
 
   inquiries: CampaignInquiry[];
+  campaignInquiries: CampaignInquiry[];
   addCampaignInquiry: (inquiry: Omit<CampaignInquiry, 'id' | 'submittedAt'>) => void;
 
   agents: Agent[];
@@ -310,49 +313,113 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Search query
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
 
-  // Notifications
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    {
-      id: 'notif-1',
-      title: 'New Applicant: Juan Miguel Santos',
-      desc: 'Applied for Customer Service Representative',
-      time: '2m ago',
-      unread: true,
-      type: 'applicant',
-    },
-    {
-      id: 'notif-2',
-      title: 'QA Benchmark Exceeded',
-      desc: 'Pod Alpha achieved 99.2% QA pass rate today',
-      time: '25m ago',
-      unread: true,
-      type: 'qa',
-    },
-    {
-      id: 'notif-3',
-      title: 'Campaign Dials Milestone',
-      desc: 'US FinTech Appointment Setter passed 4,800 dials',
-      time: '1h ago',
-      unread: true,
-      type: 'campaign',
-    },
-    {
-      id: 'notif-4',
-      title: 'Interview Scheduled',
-      desc: 'Daniela Perez booked final interview for 3:00 PM',
-      time: '2h ago',
-      unread: true,
-      type: 'applicant',
-    },
-    {
-      id: 'notif-5',
-      title: 'System Health Good',
-      desc: 'Vicidial & CRM sync running at 99.98% uptime',
-      time: '4h ago',
-      unread: true,
-      type: 'system',
-    },
-  ]);
+  // Notifications - dynamically updated on live events
+  const [notifications, setNotifications] = useState<NotificationItem[]>(() => {
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_PREFIX + 'notifications');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(LOCAL_STORAGE_PREFIX + 'notifications', JSON.stringify(notifications));
+    } catch {
+      // Ignore
+    }
+  }, [notifications]);
+
+  // Fetch applicants from Supabase Postgres (with API fallback) on mount & periodically
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchApplicants = async () => {
+      try {
+        // Direct Supabase fetch
+        const { data, error } = await supabase
+          .from('applicants')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0 && isMounted) {
+          const mapped: Applicant[] = data.map((a: any) => ({
+            id: String(a.id),
+            name: a.name || 'Applicant',
+            role: a.role || 'Appointment Setter',
+            email: a.email || '',
+            phone: a.phone || '',
+            location: a.location || 'Philippines',
+            appliedDate:
+              a.applied_date ||
+              (a.created_at
+                ? new Date(a.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : 'Recent'),
+            status: a.status || 'New Applicant',
+            initials:
+              a.name
+                ?.split(' ')
+                .map((n: string) => n[0])
+                .slice(0, 2)
+                .join('')
+                .toUpperCase() || 'AP',
+            experienceYears: a.experience ? parseInt(a.experience, 10) || 1 : 1,
+            notes: a.past_companies || a.notes || '',
+            resumeFileName: `${(a.name || 'Applicant').replace(/\s+/g, '_')}_Application.pdf`,
+          }));
+
+          setApplicants(mapped);
+          return;
+        }
+
+        // Optional API proxy fallback
+        const res = await fetch('/api/applicants');
+        if (res.ok) {
+          const apiData = await res.json();
+          if (apiData && Array.isArray(apiData.applicants) && isMounted) {
+            const mapped: Applicant[] = apiData.applicants.map((a: any) => ({
+              id: a.id,
+              name: a.name || 'Applicant',
+              role: a.role || 'Appointment Setter',
+              email: a.email || '',
+              phone: a.phone || '',
+              location: a.location || 'Philippines',
+              appliedDate: a.appliedDate || 'Just now',
+              status: a.status || 'New Applicant',
+              initials:
+                a.name
+                  ?.split(' ')
+                  .map((n: string) => n[0])
+                  .slice(0, 2)
+                  .join('')
+                  .toUpperCase() || 'AP',
+              experienceYears: a.experience ? parseInt(a.experience, 10) || 1 : 1,
+              notes: a.pastCompanies || a.notes || '',
+              resumeFileName: `${(a.name || 'Applicant').replace(/\s+/g, '_')}_Application.pdf`,
+            }));
+
+            setApplicants(mapped);
+          }
+        }
+      } catch (err) {
+        console.warn('Applicant fetch notice:', err);
+      }
+    };
+
+    fetchApplicants();
+
+    // Periodic poll every 10 seconds for real-time live sync between tabs
+    const interval = setInterval(fetchApplicants, 10000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   // Sync to localStorage
   useEffect(() => {
@@ -395,45 +462,121 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [mediaItems]);
 
-  const addApplicant = (newApp: Omit<Applicant, 'id' | 'appliedDate' | 'initials'>) => {
+  const addApplicant = async (newApp: Omit<Applicant, 'id' | 'appliedDate' | 'initials'>) => {
     const initials = newApp.name
       .split(' ')
       .map((n) => n[0])
       .slice(0, 2)
       .join('')
-      .toUpperCase();
+      .toUpperCase() || 'AP';
 
+    const tempId = 'app-' + Date.now();
     const created: Applicant = {
       ...newApp,
-      id: 'app-' + Date.now(),
+      id: tempId,
       appliedDate: 'Just now',
-      initials: initials || 'AP',
+      initials,
     };
 
-    setApplicants((prev) => [created, ...prev]);
+    // 1. Immediate optimistic UI update
+    setApplicants((prev) => [created, ...prev.filter((a) => a.id !== tempId)]);
 
-    // Push notification
+    // 2. Push real-time notification to admin bell
     setNotifications((prev) => [
       {
         id: 'notif-' + Date.now(),
         title: `New Applicant: ${created.name}`,
-        desc: `Applied for ${created.role}`,
+        desc: `Applied for ${created.role} (${created.phone})`,
         time: 'Just now',
         unread: true,
         type: 'applicant',
       },
       ...prev,
     ]);
+
+    // 3. Persist to Supabase Postgres (and API proxy if available)
+    try {
+      const dbPayload = {
+        name: created.name,
+        email: created.email,
+        phone: created.phone,
+        location: (newApp as any).location || 'Philippines',
+        role: created.role,
+        experience: (newApp as any).experience || `${created.experienceYears || 1} years`,
+        has_bpo_experience: (newApp as any).hasBpoExperience || 'Yes',
+        bpo_experience: (newApp as any).bpoExperience || '',
+        past_companies: (newApp as any).pastCompanies || created.notes || '',
+        education: (newApp as any).education || "College Graduate (Bachelor's Degree)",
+        work_setup: (newApp as any).workSetup || 'Yes — Desktop/Laptop',
+        referral_source: (newApp as any).referralSource || 'Online Talent Portal',
+        status: created.status || 'New Applicant',
+        skills: (newApp as any).skills || [created.role, 'Telemarketing'],
+        created_at: new Date().toISOString(),
+      };
+
+      const { data: supaData, error: supaError } = await supabase
+        .from('applicants')
+        .insert([dbPayload])
+        .select();
+
+      if (!supaError && supaData && supaData[0]?.id) {
+        setApplicants((prev) =>
+          prev.map((a) => (a.id === tempId ? { ...a, id: String(supaData[0].id) } : a))
+        );
+      } else {
+        // Fallback to API if available
+        const res = await fetch('/api/applicants', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...dbPayload,
+            hasBpoExperience: (newApp as any).hasBpoExperience,
+            bpoExperience: (newApp as any).bpoExperience,
+            pastCompanies: (newApp as any).pastCompanies,
+            workSetup: (newApp as any).workSetup,
+            referralSource: (newApp as any).referralSource,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.applicant?.id) {
+            setApplicants((prev) =>
+              prev.map((a) => (a.id === tempId ? { ...a, id: String(data.applicant.id) } : a))
+            );
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Supabase applicant persistence notice:', err);
+    }
   };
 
-  const updateApplicantStatus = (id: string, status: ApplicationStatus) => {
+  const updateApplicantStatus = async (id: string, status: ApplicationStatus) => {
     setApplicants((prev) =>
       prev.map((app) => (app.id === id ? { ...app, status } : app))
     );
+
+    try {
+      await supabase.from('applicants').update({ status }).eq('id', id);
+      await fetch(`/api/applicants/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      }).catch(() => {});
+    } catch (err) {
+      console.warn('Status update notice:', err);
+    }
   };
 
-  const deleteApplicant = (id: string) => {
+  const deleteApplicant = async (id: string) => {
     setApplicants((prev) => prev.filter((app) => app.id !== id));
+    try {
+      await supabase.from('applicants').delete().eq('id', id);
+      await fetch(`/api/applicants/${id}`, { method: 'DELETE' }).catch(() => {});
+    } catch (err) {
+      console.warn('Delete applicant notice:', err);
+    }
   };
 
   const addAgent = (newAgent: Omit<Agent, 'id'>) => {
@@ -540,6 +683,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateApplicantStatus,
         deleteApplicant,
         inquiries,
+        campaignInquiries: inquiries || [],
         addCampaignInquiry,
         agents,
         addAgent,
