@@ -101,32 +101,49 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 const LOCAL_STORAGE_PREFIX = 'vtg_portal_v1_';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Determine initial route based on path and hash
+  // Determine initial route based on path, query parameters, and hash
   const getInitialRoute = (): { view: 'public' | 'admin'; page: PublicPage } => {
     try {
-      const path = window.location.pathname.toLowerCase();
-      const hash = window.location.hash.toLowerCase();
+      if (typeof window === 'undefined') {
+        return { view: 'public', page: 'home' };
+      }
 
-      if (path.includes('/admin') || hash === '#admin') {
+      const path = (window.location.pathname || '').toLowerCase().replace(/\/+$/, '') || '/';
+      const hash = (window.location.hash || '').toLowerCase().replace(/^#\/?/, '');
+      const searchParams = new URLSearchParams(window.location.search || '');
+      const queryPage = (searchParams.get('page') || searchParams.get('p') || searchParams.get('view') || '').toLowerCase();
+
+      // Check for admin view
+      if (
+        path === '/admin' ||
+        path.startsWith('/admin/') ||
+        hash === 'admin' ||
+        hash.startsWith('admin/') ||
+        queryPage === 'admin'
+      ) {
         return { view: 'admin', page: 'home' };
       }
-      if (path.includes('/solutions') || hash === '#solutions') {
+
+      // Check specific public pages
+      const target = queryPage || hash || path.replace(/^\//, '');
+
+      if (target.includes('solution')) {
         return { view: 'public', page: 'solutions' };
       }
-      if (path.includes('/about') || hash === '#about' || hash === '#why-us') {
+      if (target.includes('about') || target.includes('why-us') || target.includes('team')) {
         return { view: 'public', page: 'about' };
       }
-      if (path.includes('/blog') || hash === '#blog' || hash === '#testimonials') {
+      if (target.includes('blog') || target.includes('testimonial') || target.includes('news')) {
         return { view: 'public', page: 'blog' };
       }
-      if (path.includes('/contact') || hash === '#contact' || hash === '#faq') {
+      if (target.includes('contact') || target.includes('faq') || target.includes('inquiry')) {
         return { view: 'public', page: 'contact' };
       }
-      if (path.includes('/apply') || hash === '#apply') {
+      if (target.includes('apply') || target.includes('career') || target.includes('job')) {
         return { view: 'public', page: 'apply' };
       }
     } catch {
-      // ignore
+      // safe fallback
     }
     return { view: 'public', page: 'home' };
   };
